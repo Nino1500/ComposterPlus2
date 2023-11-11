@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="ComposterPlus">
+    <output-path>$PROJECT_DIR$/../../working/my personal projects/server3/plugins</output-path>
+    <root id="archive" name="ComposterPlus.jar">
+      <element id="module-output" name="ComposterPlus" />
+    </root>
+  </artifact>
+</component>

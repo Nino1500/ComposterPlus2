@@ -1,0 +1,50 @@
+# If you wish to use FLAT (SQLite) just set MySQL to False.
+Database:
+  MySQL: False
+  host: localhost
+  database: minecraft
+  username: minecraft
+  password: minecraft
+  port: 3306
+Language:
+  # Useful
+  Prefix: "§2ComposterPlus §7- "
+  # CompostGui-related
+  CompostGui: "§2Compost"
+  StoredEXP: "§aStored Exp"
+  StoredEXPLore: "§7LeftClick takes all §aExperience §7out!"
+  StoredEXPAmount: "§eStored: §7"
+  CompostLevelChanceLore: "§2Chance: §a"
+  # LootGui-related
+  LootGui: "§6Loot"
+  LootGuiExpReward: "§aExp: §a"
+  LootGuiChanceReward: "§7Chance: §9"
+  # BreakingComposter
+  BreakComposterEXP: "§2There's still EXP stored, cannot destroy!"
+Messages:
+  NotPlayer: "§7You must be a player to execute this command."
+  NoPermission: "§7You do not have permission to execute this command."
+  AddCompostUsage: "§7Usage: §b/cp addcompost §a<compost_chance>"
+  InvalidCompostChance: "§7Invalid compost chance."
+  CompostAdded: "§7Compost added successfully."
+  AddLootUsage: "§7Usage: §b/cp addloot §a<chance> <player_exp>"
+  InvalidChanceValue: "§7Invalid chance value."
+  InvalidPlayerExpValue: "§7Invalid player experience value."
+  LootAdded: "§7Loot added successfully."
+  UnknownSubCommand: "§7Unknown sub-command. Type §b/cp help §7for a list of commands."
+  AttemptAir: "§7Attempted to use §fAIR§7 as Item!"
+  AlreadyAddedCompost: "§7Compost was already added!"
+  AlreadyAddedLoot: "§7Loot was already added!"
+Permissions:
+  AdminCommand: "cp.admin"
+# WhiteListed Worlds
+Worlds:
+  - world
+# BoneMeal-Settings
+BoneMeal:
+  Remove: False
+  # Reduces BoneMeal to a certain percentage of chance (only if Remove is on False)
+  Reduce:
+    Use: False
+    Percentage: 20
+

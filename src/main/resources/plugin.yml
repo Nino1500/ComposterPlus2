@@ -1,0 +1,10 @@
+name: ComposterPlus
+author: Ninoo
+version: 2.0
+api-version: 1.20
+prefix: ComposterPlus
+main: net.fruchtlabor.composterplus.ComposterPlus
+commands:
+  cp:
+    aliases: composter, composterplus
+    description: AdminCommands
