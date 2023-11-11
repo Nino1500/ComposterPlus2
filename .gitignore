@@ -12,6 +12,8 @@ target/
 *.iml
 *.ipr
 src/main/java/net/fruchtlabor/composterplus/builder/
+.idea
+.gitignore
 
 ### Eclipse ###
 .apt_generated
