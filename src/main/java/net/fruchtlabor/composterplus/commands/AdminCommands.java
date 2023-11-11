@@ -108,7 +108,6 @@ public class AdminCommands implements CommandExecutor {
                 player.sendMessage(prefix + ComposterPlus.plugin.getConfig().getString("Messages.LootAdded"));
                 break;
 
-
             case "removecompost":
                 if (itemInHand.getType() == Material.AIR){
                     player.sendMessage(prefix + ComposterPlus.plugin.getConfig().getString("Messages.AttemptAir"));
