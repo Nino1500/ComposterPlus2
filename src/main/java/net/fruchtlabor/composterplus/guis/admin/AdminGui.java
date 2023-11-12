@@ -18,7 +18,7 @@ import static net.fruchtlabor.composterplus.ComposterPlus.plugin;
 
 public class AdminGui {
     public Inventory getMainAdminPanel(Player player){
-        InventoryBuilder inventoryBuilder = new InventoryBuilder("ComposterPlus - AdminGui", 9*1);
+        InventoryBuilder inventoryBuilder = new InventoryBuilder("§7ComposterPlus - AdminGui", 9*1);
         inventoryBuilder.setItem(3, new ItemBuilder(Material.COMPOSTER).setDisplayName("§7Remove Composts").build(), e -> {
             e.getWhoClicked().openInventory(getRemoveGuiCompost(player, 0));
         });
@@ -33,10 +33,10 @@ public class AdminGui {
         for (Compost compost : ComposterPlus.composts){
             demoComposts.add(new Demo_Compost(compost));
         }
-        PageableInventory.PageableBuilder inv = new PageableInventory.PageableBuilder(player, plugin.getConfig().getString("Language.CompostGui"), 9*6, demoComposts);
+        PageableInventory.PageableBuilder inv = new PageableInventory.PageableBuilder(player, ComposterPlus.languageManager.getMessage("Gui.CompostGui"), 9*6, demoComposts);
         inv.setItemAction(((pageableItem, inventoryBuilderItemClickEvent) -> {
-            InventoryBuilder inventoryBuilder = new InventoryBuilder("ComposterPlus - AdminGui - Remove Compost", 9*1);
-            inventoryBuilder.setItem(3, new ItemBuilder(Material.GREEN_WOOL).setDisplayName("Remove Compost").build(), e2 -> {
+            InventoryBuilder inventoryBuilder = new InventoryBuilder("§7ComposterPlus - Remove Compost", 9*1);
+            inventoryBuilder.setItem(3, new ItemBuilder(Material.GREEN_WOOL).setDisplayName("§aRemove Compost").build(), e2 -> {
                 for (Compost compost : ComposterPlus.composts){
                     if (compost != null){
                         if (((Demo_Compost)pageableItem).getCompost().getItem().isSimilar(compost.getItem())){
@@ -48,7 +48,7 @@ public class AdminGui {
                 }
                 e2.getWhoClicked().openInventory(getRemoveGuiCompost(player, page));
             });
-            inventoryBuilder.setItem(5, new ItemBuilder(Material.RED_WOOL).setDisplayName("Cancel").build(), e2 -> {
+            inventoryBuilder.setItem(5, new ItemBuilder(Material.RED_WOOL).setDisplayName("§cCancel").build(), e2 -> {
                 e2.getWhoClicked().openInventory(getRemoveGuiCompost(player, page));
             });
             player.openInventory(inventoryBuilder.build());
@@ -61,10 +61,10 @@ public class AdminGui {
         for (Loot loot : ComposterPlus.loots){
             demoLoots.add(new Demo_Loot(loot));
         }
-        PageableInventory.PageableBuilder inv = new PageableInventory.PageableBuilder(player, plugin.getConfig().getString("Language.LootGui"), 9*6, demoLoots);
+        PageableInventory.PageableBuilder inv = new PageableInventory.PageableBuilder(player, ComposterPlus.languageManager.getMessage("Gui.LootGui"), 9*6, demoLoots);
         inv.setItemAction(((pageableItem, inventoryBuilderItemClickEvent) -> {
-            InventoryBuilder inventoryBuilder = new InventoryBuilder("ComposterPlus - AdminGui - Remove Loot", 9*1);
-            inventoryBuilder.setItem(3, new ItemBuilder(Material.GREEN_WOOL).setDisplayName("Remove Loot").build(), e2 -> {
+            InventoryBuilder inventoryBuilder = new InventoryBuilder("§7ComposterPlus - Remove Loot", 9*1);
+            inventoryBuilder.setItem(3, new ItemBuilder(Material.GREEN_WOOL).setDisplayName("§aRemove Loot").build(), e2 -> {
                 for (Loot loot : ComposterPlus.loots){
                     if (loot != null){
                         if (((Demo_Loot)pageableItem).getLoot().getItem().isSimilar(loot.getItem())){
@@ -76,7 +76,7 @@ public class AdminGui {
                 }
                 e2.getWhoClicked().openInventory(getRemoveGuiLoot(player, page));
             });
-            inventoryBuilder.setItem(5, new ItemBuilder(Material.RED_WOOL).setDisplayName("Cancel").build(), e2 -> {
+            inventoryBuilder.setItem(5, new ItemBuilder(Material.RED_WOOL).setDisplayName("§cCancel").build(), e2 -> {
                 e2.getWhoClicked().openInventory(getRemoveGuiLoot(player, page));
             });
             player.openInventory(inventoryBuilder.build());

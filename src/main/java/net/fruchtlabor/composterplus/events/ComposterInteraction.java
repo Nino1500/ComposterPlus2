@@ -77,7 +77,7 @@ public class ComposterInteraction implements Listener {
             new BukkitRunnable() {
                 @Override
                 public void run() {
-                    System.out.println("Started Hopper-Action: "+ itemStack.getType().name() + " Amount: " + itemStack.getAmount());
+                    //System.out.println("Started Hopper-Action: "+ itemStack.getType().name() + " Amount: " + itemStack.getAmount());
                     doHopperAction(composter, compost, itemStack, hopper);
                 }
             }.runTaskLater(ComposterPlus.plugin, 1);

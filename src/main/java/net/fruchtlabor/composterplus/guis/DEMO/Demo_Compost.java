@@ -17,7 +17,7 @@ public class Demo_Compost implements PageableItem {
     @Override
     public ItemStack getItemStack() {
         return new ItemBuilder(compost.getItem())
-                .addLore(ComposterPlus.plugin.getConfig().getString("Language.CompostLevelChanceLore") + compost.getCompost_chance() + "%")
+                .addLore(ComposterPlus.languageManager.getMessage("Gui.CompostLevelChanceLore") + compost.getCompost_chance() + "%")
                 .build();
     }
 

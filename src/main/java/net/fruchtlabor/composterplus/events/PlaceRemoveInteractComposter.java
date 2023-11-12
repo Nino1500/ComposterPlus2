@@ -3,10 +3,7 @@ package net.fruchtlabor.composterplus.events;
 import net.fruchtlabor.composterplus.ComposterPlus;
 import net.fruchtlabor.composterplus.guis.ComposterGui;
 import net.fruchtlabor.composterplus.misc.Composter;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.event.EventHandler;
@@ -46,6 +43,10 @@ public class PlaceRemoveInteractComposter implements Listener {
     @EventHandler
     public void onRemove(BlockBreakEvent event){
         if (event.getBlock().getType().equals(Material.COMPOSTER)){
+            if (event.getPlayer().getGameMode().equals(GameMode.CREATIVE)){
+                event.setCancelled(true);
+                return;
+            }
             if (!ComposterPlus.plugin.getConfig().getStringList("Worlds").contains(event.getBlock().getWorld().getName())){
                 return;
             }
@@ -59,7 +60,7 @@ public class PlaceRemoveInteractComposter implements Listener {
                     Double exp = dataContainer.get(key, PersistentDataType.DOUBLE);
                     if (exp != null && exp > 0) {
                         event.setCancelled(true);
-                        event.getPlayer().sendMessage(ComposterPlus.plugin.getConfig().getString("Language.BreakComposterEXP"));
+                        event.getPlayer().sendMessage(ComposterPlus.languageManager.getMessage("Messages.BreakComposterEXP"));
                     }
                     armorStand.remove();
                     break;

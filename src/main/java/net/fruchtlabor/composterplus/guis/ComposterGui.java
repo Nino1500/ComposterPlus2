@@ -33,18 +33,19 @@ public class ComposterGui {
         InventoryBuilder inventoryBuilder = new InventoryBuilder("§2ComposterPlus", 9*2);
         inventoryBuilder.setItemWithCoordinates(9, 17, new ItemBuilder(Material.GRAY_STAINED_GLASS_PANE).setDisplayName("").build(), 150);
 
-        inventoryBuilder.setItem(2, new ItemBuilder(Material.DIRT).setDisplayName(plugin.getConfig().getString("Language.CompostGui")).build(), e -> {
+        inventoryBuilder.setItem(2, new ItemBuilder(Material.DIRT).setDisplayName(ComposterPlus.languageManager.getMessage("Gui.CompostGui")).build(), e -> {
             player.openInventory(getCompostGui(player, 0));
         });
 
-        inventoryBuilder.setItem(4, new ItemBuilder(Material.DIAMOND).setDisplayName(plugin.getConfig().getString("Language.LootGui")).build(), e -> {
+        inventoryBuilder.setItem(4, new ItemBuilder(Material.DIAMOND).setDisplayName(ComposterPlus.languageManager.getMessage("Gui.LootGui")).build(), e -> {
             player.openInventory(getLootGui(player, 0));
         });
 
-        inventoryBuilder.setItem(6, new ItemBuilder(Material.EXPERIENCE_BOTTLE).setDisplayName(plugin.getConfig().getString("Language.StoredEXP"))
-                .addLore(ComposterPlus.plugin.getConfig().getString("Language.StoredEXPLore"))
-                .addLore(ComposterPlus.plugin.getConfig().getString("Language.StoredEXPAmount") + storedEXP).build(), e -> {
+        inventoryBuilder.setItem(6, new ItemBuilder(Material.EXPERIENCE_BOTTLE).setDisplayName(ComposterPlus.languageManager.getMessage("Gui.StoredEXP"))
+                .addLore(ComposterPlus.languageManager.getMessage("Gui.StoredEXPLore"))
+                .addLore(ComposterPlus.languageManager.getMessage("Gui.StoredEXPAmount") + storedEXP).build(), e -> {
             composter.removeExp(player);
+            player.openInventory(getComposterMainGui(player));
         });
 
         return inventoryBuilder.build();
@@ -55,7 +56,7 @@ public class ComposterGui {
         for (Compost compost : ComposterPlus.composts){
             demoComposts.add(new Demo_Compost(compost));
         }
-        PageableInventory.PageableBuilder inv = new PageableInventory.PageableBuilder(player, plugin.getConfig().getString("Language.CompostGui"), 9*6, demoComposts);
+        PageableInventory.PageableBuilder inv = new PageableInventory.PageableBuilder(player, ComposterPlus.languageManager.getMessage("Gui.CompostGui"), 9*6, demoComposts);
         inv.setPreviousInventory(getComposterMainGui(player));
         inv.setItemAction(new DummyNextPageableAction());  // Set dummy NextPageableAction
         return inv.build().getInventory(page);
@@ -66,7 +67,7 @@ public class ComposterGui {
         for (Loot loot : ComposterPlus.loots){
             demoLoots.add(new Demo_Loot(loot));
         }
-        PageableInventory.PageableBuilder inv = new PageableInventory.PageableBuilder(player, plugin.getConfig().getString("Language.LootGui"), 9*6, demoLoots);
+        PageableInventory.PageableBuilder inv = new PageableInventory.PageableBuilder(player, ComposterPlus.languageManager.getMessage("Gui.LootGui"), 9*6, demoLoots);
         inv.setPreviousInventory(getComposterMainGui(player));
         inv.setItemAction(new DummyNextPageableAction());
         return inv.build().getInventory(page);

@@ -17,8 +17,9 @@ public class Demo_Loot implements PageableItem {
     @Override
     public ItemStack getItemStack() {
         return new ItemBuilder(loot.getItem())
-                .addLore(ComposterPlus.plugin.getConfig().getString("Language.LootGuiChanceReward") + loot.getChance() + "%")
-                .addLore(ComposterPlus.plugin.getConfig().getString("Language.LootGuiExpReward") + loot.getPlayer_exp())
+                .addLore(ComposterPlus.languageManager.getMessage("Gui.LootGuiChanceReward") + loot.getChance() + "%")
+                .addLore(ComposterPlus.languageManager.getMessage("Gui.LootGuiExpReward") + loot.getPlayer_exp())
+                .setAmount(loot.getItem().getAmount())
                 .build();
     }
 

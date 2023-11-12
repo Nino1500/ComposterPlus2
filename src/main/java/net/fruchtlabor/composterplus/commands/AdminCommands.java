@@ -18,28 +18,23 @@ public class AdminCommands implements CommandExecutor {
 
     @Override
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
-        String prefix = ComposterPlus.plugin.getConfig().getString("Language.Prefix");
+        String prefix = ComposterPlus.languageManager.getMessage("General.Prefix");
         String adminPermission = ComposterPlus.plugin.getConfig().getString("Permissions.AdminCommand");
 
         if (!(commandSender instanceof Player)) {
-            commandSender.sendMessage(prefix + ComposterPlus.plugin.getConfig().getString("Messages.NotPlayer"));
+            commandSender.sendMessage(prefix + ComposterPlus.languageManager.getMessage("Messages.NotPlayer"));
             return true;
         }
 
         Player player = (Player) commandSender;
 
         if (!player.hasPermission(adminPermission)) {
-            player.sendMessage(prefix + ComposterPlus.plugin.getConfig().getString("Messages.NoPermission"));
+            player.sendMessage(prefix + ComposterPlus.languageManager.getMessage("Messages.NoPermission"));
             return true;
         }
 
         if (args.length == 0) {
-            displayHelp(commandSender, prefix);
-            return true;
-        }
-        // cp admin
-        if (args.length == 1 && args[0].equalsIgnoreCase("admin")){
-            player.openInventory(new AdminGui().getMainAdminPanel(player));
+            displayHelp(player, prefix);
             return true;
         }
 
@@ -47,100 +42,20 @@ public class AdminCommands implements CommandExecutor {
         ItemStack itemInHand = player.getInventory().getItemInMainHand();
         switch (subCommand) {
             case "addcompost":
-                if (itemInHand.getType() == Material.AIR){
-                    player.sendMessage(prefix + ComposterPlus.plugin.getConfig().getString("Messages.AttemptAir"));
-                    return false;
-                }
-                if (args.length != 2) {
-                    player.sendMessage(prefix + ComposterPlus.plugin.getConfig().getString("Messages.AddCompostUsage"));
-                    return true;
-                }
-                int compostChance;
-                try {
-                    compostChance = Integer.parseInt(args[1]);
-                } catch (NumberFormatException e) {
-                    player.sendMessage(prefix + ComposterPlus.plugin.getConfig().getString("Messages.InvalidCompostChance"));
-                    return true;
-                }
-                ItemStack copy = new ItemStack(itemInHand);
-                copy.setAmount(1);
-                if (compostExists(copy)){
-                    player.sendMessage(prefix + ComposterPlus.plugin.getConfig().getString("Messages.AlreadyAddedCompost"));
-                    return false;
-                }
-                Compost compost = new Compost(copy, compostChance);
-                ComposterPlus.composts.add(compost);
-                ComposterPlus.database.insertCompost(compost);
-                player.sendMessage(prefix + ComposterPlus.plugin.getConfig().getString("Messages.CompostAdded"));
-                break;
-
+                return handleAddCompost(player, itemInHand, args, prefix);
             case "addloot":
-                if (itemInHand.getType() == Material.AIR){
-                    player.sendMessage(prefix + ComposterPlus.plugin.getConfig().getString("Messages.AttemptAir"));
-                    return false;
-                }
-                if (args.length != 3) {
-                    player.sendMessage(prefix + ComposterPlus.plugin.getConfig().getString("Messages.AddLootUsage"));
-                    return true;
-                }
-                double chance;
-                try {
-                    chance = Double.parseDouble(args[1]);
-                } catch (NumberFormatException e) {
-                    player.sendMessage(prefix + ComposterPlus.plugin.getConfig().getString("Messages.InvalidChanceValue"));
-                    return true;
-                }
-                int playerExp;
-                try {
-                    playerExp = Integer.parseInt(args[2]);
-                } catch (NumberFormatException e) {
-                    player.sendMessage(prefix + ComposterPlus.plugin.getConfig().getString("Messages.InvalidPlayerExpValue"));
-                    return true;
-                }
-                ItemStack copyLoot = new ItemStack(itemInHand);
-                if (lootExists(copyLoot)){
-                    player.sendMessage(prefix + ComposterPlus.plugin.getConfig().getString("Messages.AlreadyAddedLoot"));
-                    return false;
-                }
-                Loot loot = new Loot(copyLoot, chance, playerExp);
-                ComposterPlus.loots.add(loot);
-                ComposterPlus.database.insertLoot(loot);
-                player.sendMessage(prefix + ComposterPlus.plugin.getConfig().getString("Messages.LootAdded"));
-                break;
-
+                return handleAddLoot(player, itemInHand, args, prefix);
             case "removecompost":
-                if (itemInHand.getType() == Material.AIR){
-                    player.sendMessage(prefix + ComposterPlus.plugin.getConfig().getString("Messages.AttemptAir"));
-                    return false;
-                }
-                if (removeCompost(itemInHand)) {
-                    player.sendMessage(prefix + " Compost item removed successfully.");
-                } else {
-                    player.sendMessage(prefix + " No compost item found to remove.");
-                }
-                break;
-
+                return handleRemoveCompost(player, itemInHand, prefix);
             case "removeloot":
-                if (itemInHand.getType() == Material.AIR){
-                    player.sendMessage(prefix + ComposterPlus.plugin.getConfig().getString("Messages.AttemptAir"));
-                    return false;
-                }
-                if (removeLoot(itemInHand)) {
-                    player.sendMessage(prefix + " Loot item removed successfully.");
-                } else {
-                    player.sendMessage(prefix + " No loot item found to remove.");
-                }
-                break;
-
+                return handleRemoveLoot(player, itemInHand, prefix);
             case "help":
-                displayHelp(commandSender, prefix);
-                break;
-
+                displayHelp(player, prefix);
+                return true;
             default:
-                player.sendMessage(prefix + ComposterPlus.plugin.getConfig().getString("Messages.UnknownSubCommand"));
-                break;
+                player.sendMessage(prefix + ComposterPlus.languageManager.getMessage("Messages.UnknownSubCommand"));
+                return true;
         }
-        return true;
     }
 
     private void displayHelp(CommandSender sender, String prefix) {
@@ -153,6 +68,87 @@ public class AdminCommands implements CommandExecutor {
         sender.sendMessage("§9/cp §ahelp §7- Displays this help message.");
     }
 
+    private boolean handleAddCompost(Player player, ItemStack itemInHand, String[] args, String prefix) {
+        if (itemInHand.getType() == Material.AIR) {
+            player.sendMessage(prefix + ComposterPlus.languageManager.getMessage("Messages.AttemptAir"));
+            return true;
+        }
+        if (args.length != 2) {
+            player.sendMessage(prefix + ComposterPlus.languageManager.getMessage("Messages.AddCompostUsage"));
+            return true;
+        }
+        try {
+            int compostChance = Integer.parseInt(args[1]);
+            ItemStack copy = new ItemStack(itemInHand);
+            copy.setAmount(1);
+            if (compostExists(copy)) {
+                player.sendMessage(prefix + ComposterPlus.languageManager.getMessage("Messages.AlreadyAddedCompost"));
+                return true;
+            }
+            Compost compost = new Compost(copy, compostChance);
+            ComposterPlus.composts.add(compost);
+            ComposterPlus.database.insertCompost(compost);
+            player.sendMessage(prefix + ComposterPlus.languageManager.getMessage("Messages.CompostAdded"));
+            return true;
+        } catch (NumberFormatException e) {
+            player.sendMessage(prefix + ComposterPlus.languageManager.getMessage("Messages.InvalidCompostChance"));
+            return true;
+        }
+    }
+
+    private boolean handleAddLoot(Player player, ItemStack itemInHand, String[] args, String prefix) {
+        if (itemInHand.getType() == Material.AIR) {
+            player.sendMessage(prefix + ComposterPlus.languageManager.getMessage("Messages.AttemptAir"));
+            return true;
+        }
+        if (args.length != 3) {
+            player.sendMessage(prefix + ComposterPlus.languageManager.getMessage("Messages.AddLootUsage"));
+            return true;
+        }
+        try {
+            double chance = Double.parseDouble(args[1]);
+            int playerExp = Integer.parseInt(args[2]);
+            ItemStack copyLoot = new ItemStack(itemInHand);
+            if (lootExists(copyLoot)) {
+                player.sendMessage(prefix + ComposterPlus.languageManager.getMessage("Messages.AlreadyAddedLoot"));
+                return true;
+            }
+            Loot loot = new Loot(copyLoot, chance, playerExp);
+            ComposterPlus.loots.add(loot);
+            ComposterPlus.database.insertLoot(loot);
+            player.sendMessage(prefix + ComposterPlus.languageManager.getMessage("Messages.LootAdded"));
+            return true;
+        } catch (NumberFormatException e) {
+            player.sendMessage(prefix + ComposterPlus.languageManager.getMessage("Messages.InvalidChanceValue"));
+            return true;
+        }
+    }
+
+    private boolean handleRemoveCompost(Player player, ItemStack itemInHand, String prefix) {
+        if (itemInHand.getType() == Material.AIR) {
+            player.sendMessage(prefix + ComposterPlus.languageManager.getMessage("Messages.AttemptAir"));
+            return true;
+        }
+        if (removeCompost(itemInHand)) {
+            player.sendMessage(prefix + ComposterPlus.languageManager.getMessage("Messages.RemoveCompostSuccess"));
+        } else {
+            player.sendMessage(prefix + ComposterPlus.languageManager.getMessage("Messages.RemoveCompostFail"));
+        }
+        return true;
+    }
+
+    private boolean handleRemoveLoot(Player player, ItemStack itemInHand, String prefix) {
+        if (itemInHand.getType() == Material.AIR) {
+            player.sendMessage(prefix + ComposterPlus.languageManager.getMessage("Messages.AttemptAir"));
+            return true;
+        }
+        if (removeLoot(itemInHand)) {
+            player.sendMessage(prefix + ComposterPlus.languageManager.getMessage("Messages.RemoveLootSuccess"));
+        } else {
+            player.sendMessage(prefix + ComposterPlus.languageManager.getMessage("Messages.RemoveLootFail"));
+        }
+        return true;
+    }
 
     private boolean compostExists(ItemStack itemStack) {
         for (Compost compost : ComposterPlus.composts) {
@@ -197,7 +193,4 @@ public class AdminCommands implements CommandExecutor {
         }
         return false;
     }
-
-
-
 }
