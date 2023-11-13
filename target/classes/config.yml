@@ -1,0 +1,20 @@
+# If you wish to use FLAT (SQLite) just set MySQL to False.
+Database:
+  MySQL: False
+  host: localhost
+  database: minecraft
+  username: minecraft
+  password: minecraft
+  port: 3306
+# WhiteListed Worlds
+Worlds:
+  - world
+# BoneMeal-Settings
+BoneMeal:
+  Remove: False
+  # Reduces BoneMeal to a certain percentage of chance (only if Remove is on False)
+  Reduce:
+    Use: False
+    Percentage: 20
+Permissions:
+  AdminCommand: "cp.admin"
