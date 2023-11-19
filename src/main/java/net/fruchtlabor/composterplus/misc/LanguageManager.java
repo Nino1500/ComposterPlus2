@@ -1,6 +1,5 @@
 package net.fruchtlabor.composterplus.misc;
 
-import net.fruchtlabor.composterplus.ComposterPlus;
 import org.bukkit.configuration.file.YamlConfiguration;
 import java.io.File;
 import java.util.logging.Logger;

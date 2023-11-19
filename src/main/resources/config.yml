@@ -9,12 +9,5 @@ Database:
 # WhiteListed Worlds
 Worlds:
   - world
-# BoneMeal-Settings
-BoneMeal:
-  Remove: False
-  # Reduces BoneMeal to a certain percentage of chance (only if Remove is on False)
-  Reduce:
-    Use: False
-    Percentage: 20
 Permissions:
   AdminCommand: "cp.admin"

@@ -15,7 +15,7 @@ Gui:
   # PageGui
   CurrentPage: "§aPage"
   OtherPages: "§2Page"
-  UnusedPages: "§cAtm.. not necessary."
+  UnusedPages: "§cAtm. not necessary."
   Back: "§cBack"
   NoEntries: "§cNo Entries"
 # General Player-Output

@@ -18,8 +18,6 @@ import org.bukkit.inventory.Inventory;
 
 import java.util.ArrayList;
 
-import static net.fruchtlabor.composterplus.ComposterPlus.plugin;
-
 public class ComposterGui {
 
     private final Composter composter;
@@ -44,8 +42,10 @@ public class ComposterGui {
         inventoryBuilder.setItem(6, new ItemBuilder(Material.EXPERIENCE_BOTTLE).setDisplayName(ComposterPlus.languageManager.getMessage("Gui.StoredEXP"))
                 .addLore(ComposterPlus.languageManager.getMessage("Gui.StoredEXPLore"))
                 .addLore(ComposterPlus.languageManager.getMessage("Gui.StoredEXPAmount") + storedEXP).build(), e -> {
-            composter.removeExp(player);
-            player.openInventory(getComposterMainGui(player));
+            if (composter.getExp() > 0.0){
+                composter.removeExp(player);
+                player.openInventory(getComposterMainGui(player));
+            }
         });
 
         return inventoryBuilder.build();
@@ -58,7 +58,7 @@ public class ComposterGui {
         }
         PageableInventory.PageableBuilder inv = new PageableInventory.PageableBuilder(player, ComposterPlus.languageManager.getMessage("Gui.CompostGui"), 9*6, demoComposts);
         inv.setPreviousInventory(getComposterMainGui(player));
-        inv.setItemAction(new DummyNextPageableAction());  // Set dummy NextPageableAction
+        inv.setItemAction(new DummyNextPageableAction());
         return inv.build().getInventory(page);
     }
 
@@ -73,7 +73,6 @@ public class ComposterGui {
         return inv.build().getInventory(page);
     }
 
-    // Dummy implementation of NextPageableAction to avoid NullPointerException
     private static class DummyNextPageableAction implements NextPageableAction {
 
         @Override

@@ -6,7 +6,6 @@ public class Compost {
     private ItemStack item;
     private int compost_chance;
 
-
     public Compost(ItemStack item, int compost_chance) {
         this.item = item;
         this.compost_chance = compost_chance;

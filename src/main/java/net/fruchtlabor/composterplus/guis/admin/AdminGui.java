@@ -13,8 +13,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
 import java.util.ArrayList;
-
-import static net.fruchtlabor.composterplus.ComposterPlus.plugin;
+import java.util.Iterator;
 
 public class AdminGui {
     public Inventory getMainAdminPanel(Player player){
@@ -37,13 +36,14 @@ public class AdminGui {
         inv.setItemAction(((pageableItem, inventoryBuilderItemClickEvent) -> {
             InventoryBuilder inventoryBuilder = new InventoryBuilder("§7ComposterPlus - Remove Compost", 9*1);
             inventoryBuilder.setItem(3, new ItemBuilder(Material.GREEN_WOOL).setDisplayName("§aRemove Compost").build(), e2 -> {
-                for (Compost compost : ComposterPlus.composts){
-                    if (compost != null){
-                        if (((Demo_Compost)pageableItem).getCompost().getItem().isSimilar(compost.getItem())){
-                            ComposterPlus.composts.remove(compost);
-                            ComposterPlus.database.deleteCompost(compost.getItem());
-                            e2.getWhoClicked().openInventory(getRemoveGuiCompost(player, page));
-                        }
+                Iterator<Compost> iterator = ComposterPlus.composts.iterator();
+                while (iterator.hasNext()) {
+                    Compost compost = iterator.next();
+                    if (compost != null && ((Demo_Compost) pageableItem).getCompost().getItem().isSimilar(compost.getItem())) {
+                        iterator.remove();
+                        ComposterPlus.database.deleteCompost(compost.getItem());
+                        e2.getWhoClicked().openInventory(getRemoveGuiCompost(player, page));
+                        break;
                     }
                 }
                 e2.getWhoClicked().openInventory(getRemoveGuiCompost(player, page));
@@ -56,6 +56,7 @@ public class AdminGui {
         inv.setPreviousInventory(getMainAdminPanel(player));
         return inv.build().getInventory(page);
     }
+
     public Inventory getRemoveGuiLoot(Player player, int page){
         ArrayList<Demo_Loot> demoLoots = new ArrayList<>();
         for (Loot loot : ComposterPlus.loots){
@@ -65,13 +66,14 @@ public class AdminGui {
         inv.setItemAction(((pageableItem, inventoryBuilderItemClickEvent) -> {
             InventoryBuilder inventoryBuilder = new InventoryBuilder("§7ComposterPlus - Remove Loot", 9*1);
             inventoryBuilder.setItem(3, new ItemBuilder(Material.GREEN_WOOL).setDisplayName("§aRemove Loot").build(), e2 -> {
-                for (Loot loot : ComposterPlus.loots){
-                    if (loot != null){
-                        if (((Demo_Loot)pageableItem).getLoot().getItem().isSimilar(loot.getItem())){
-                            ComposterPlus.loots.remove(loot);
-                            ComposterPlus.database.deleteLoot(loot.getItem());
-                            e2.getWhoClicked().openInventory(getRemoveGuiLoot(player, page));
-                        }
+                Iterator<Loot> iterator = ComposterPlus.loots.iterator();
+                while (iterator.hasNext()) {
+                    Loot loot = iterator.next();
+                    if (loot != null && ((Demo_Loot) pageableItem).getLoot().getItem().isSimilar(loot.getItem())) {
+                        iterator.remove();
+                        ComposterPlus.database.deleteLoot(loot.getItem());
+                        e2.getWhoClicked().openInventory(getRemoveGuiLoot(player, page));
+                        break;
                     }
                 }
                 e2.getWhoClicked().openInventory(getRemoveGuiLoot(player, page));
@@ -84,5 +86,6 @@ public class AdminGui {
         inv.setPreviousInventory(getMainAdminPanel(player));
         return inv.build().getInventory(page);
     }
+
 
 }

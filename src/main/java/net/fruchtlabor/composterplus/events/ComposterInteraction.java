@@ -9,6 +9,8 @@ import org.bukkit.Material;
 import org.bukkit.block.*;
 import org.bukkit.block.data.Levelled;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 
@@ -22,13 +24,10 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.util.List;
+
 
 public class ComposterInteraction implements Listener {
-
-    FileConfiguration config = ComposterPlus.plugin.getConfig();
-    boolean removeBoneMeal = config.getBoolean("BoneMeal.Remove");
-    boolean reduceBoneMeal = config.getBoolean("BoneMeal.Reduce.Use");
-    int reducePercentage = config.getInt("BoneMeal.Reduce.Percentage");
 
     @EventHandler
     public void onHand(PlayerInteractEvent event){
@@ -77,7 +76,6 @@ public class ComposterInteraction implements Listener {
             new BukkitRunnable() {
                 @Override
                 public void run() {
-                    //System.out.println("Started Hopper-Action: "+ itemStack.getType().name() + " Amount: " + itemStack.getAmount());
                     doHopperAction(composter, compost, itemStack, hopper);
                 }
             }.runTaskLater(ComposterPlus.plugin, 1);
@@ -128,44 +126,44 @@ public class ComposterInteraction implements Listener {
         if(block.getType() == Material.COMPOSTER){
             Composter composter = new Composter(block);
             if(composter.isCompostingComplete()){
-                if(removeBoneMeal) {
-                    return;
-                }
 
-                boolean shouldGenerateBoneMeal = shouldGenerateBoneMeal();
+                Levelled levelled = (Levelled) block.getBlockData();
+                levelled.setLevel(0);
+                block.setBlockData(levelled);
 
                 Block hopperBlock = block.getRelative(BlockFace.DOWN);
                 if(hopperBlock.getType() == Material.HOPPER){
                     Hopper hopper = (Hopper) hopperBlock.getState();
                     for(Loot loot : ComposterPlus.loots){
-                        if(shouldGenerateBoneMeal && Math.random() * 100 < loot.getChance()){
+                        if(Math.random() * 100 < loot.getChance()){
                             hopper.getInventory().addItem(loot.getItem());
                             if(loot.getPlayer_exp() > 0.0){
                                 composter.addExp(loot.getPlayer_exp());
                             }
                         }
                     }
-
-                    if(shouldGenerateBoneMeal) {
-                        ItemStack boneMeal = new ItemStack(Material.BONE_MEAL);
-                        hopper.getInventory().addItem(boneMeal);
-                    }
-
                 } else {
                     Location location = block.getLocation().add(0.5, 1, 0.5);
                     for(Loot loot : ComposterPlus.loots){
-                        if(shouldGenerateBoneMeal && Math.random() * 100 < loot.getChance()){
+                        if(Math.random() * 100 < loot.getChance()){
                             block.getWorld().dropItemNaturally(location, loot.getItem());
                             if(loot.getPlayer_exp() > 0.0){
                                 composter.addExp(loot.getPlayer_exp());
                             }
                         }
                     }
+                }
+            }
+        }
+    }
 
-                    if(shouldGenerateBoneMeal) {
-                        ItemStack boneMeal = new ItemStack(Material.BONE_MEAL);
-                        block.getWorld().dropItemNaturally(location, boneMeal);
-                    }
+    private void removeDroppedBoneMeal(Location location, int amount) {
+        List<Entity> nearbyEntities = (List<Entity>) location.getWorld().getNearbyEntities(location, 1, 1, 1);
+        for(Entity entity : nearbyEntities) {
+            if(entity instanceof Item) {
+                Item item = (Item) entity;
+                if(item.getItemStack().getType() == Material.BONE_MEAL) {
+                    item.getItemStack().setAmount(item.getItemStack().getAmount() - amount);
                 }
             }
         }
@@ -174,13 +172,6 @@ public class ComposterInteraction implements Listener {
     public boolean shouldIncreaseLevel(int compost_chance){
         double chance = compost_chance / 100.0;
         return Math.random() < chance;
-    }
-
-    private boolean shouldGenerateBoneMeal() {
-        if(reduceBoneMeal) {
-            return Math.random() < (reducePercentage / 100.0);
-        }
-        return true;
     }
 
     private Compost getCompost(ItemStack itemStack){

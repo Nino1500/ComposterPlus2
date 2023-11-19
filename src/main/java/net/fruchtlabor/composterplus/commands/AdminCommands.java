@@ -49,6 +49,8 @@ public class AdminCommands implements CommandExecutor {
                 return handleRemoveCompost(player, itemInHand, prefix);
             case "removeloot":
                 return handleRemoveLoot(player, itemInHand, prefix);
+            case "admin":
+                return handleAdmin(player);
             case "help":
                 displayHelp(player, prefix);
                 return true;
@@ -66,6 +68,11 @@ public class AdminCommands implements CommandExecutor {
         sender.sendMessage("§9/cp §aremoveloot §7- Removes a loot item with the item in your hand.");
         sender.sendMessage("§9/cp §aadmin §7- Opens the Remove-Gui for both Compost and Loot.");
         sender.sendMessage("§9/cp §ahelp §7- Displays this help message.");
+    }
+
+    private boolean handleAdmin(Player player){
+        player.openInventory(new AdminGui().getMainAdminPanel(player));
+        return true;
     }
 
     private boolean handleAddCompost(Player player, ItemStack itemInHand, String[] args, String prefix) {

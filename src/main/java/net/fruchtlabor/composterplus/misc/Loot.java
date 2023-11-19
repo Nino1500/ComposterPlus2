@@ -7,7 +7,6 @@ public class Loot {
     private double chance;
     private int player_exp;
 
-
     public Loot(ItemStack item, double chance, int player_exp) {
         this.item = item;
         this.chance = chance;

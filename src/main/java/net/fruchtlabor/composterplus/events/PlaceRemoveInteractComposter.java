@@ -69,7 +69,6 @@ public class PlaceRemoveInteractComposter implements Listener {
         }
     }
 
-
     @EventHandler
     public void onClick(PlayerInteractEvent event){
         Block block = event.getClickedBlock();
@@ -83,6 +82,4 @@ public class PlaceRemoveInteractComposter implements Listener {
             }
         }
     }
-
-
 }

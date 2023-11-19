@@ -42,45 +42,44 @@ public class Database {
     }
 
     public void createTables() {
+        boolean isMySQL = plugin.getConfig().getBoolean("Database.MySQL");
         try (Connection conn = connect();
              Statement stmt = conn.createStatement()) {
 
+            boolean isLootTable = doesTableExist("Loot");
+            boolean isCompostTable = doesTableExist("Compost");
+
+            String autoIncrement = isMySQL ? "AUTO_INCREMENT" : "AUTOINCREMENT";
+
             String createCompostTable = "CREATE TABLE IF NOT EXISTS Compost (" +
-                    "id INTEGER PRIMARY KEY AUTOINCREMENT," +
-                    "item BLOB NOT NULL," +
+                    "id INTEGER PRIMARY KEY " + autoIncrement + "," +
+                    "`item` BLOB NOT NULL," +
                     "compost_level INTEGER NOT NULL" +
                     ");";
             stmt.execute(createCompostTable);
 
             String createLootTable = "CREATE TABLE IF NOT EXISTS Loot (" +
-                    "id INTEGER PRIMARY KEY AUTOINCREMENT," +
-                    "item BLOB NOT NULL," +
+                    "id INTEGER PRIMARY KEY " + autoIncrement + "," +
+                    "`item` BLOB NOT NULL," +
                     "chance DOUBLE NOT NULL," +
                     "player_exp INTEGER NOT NULL" +
                     ");";
             stmt.execute(createLootTable);
 
-            if (isCompostTableEmpty()){
+            if (!isCompostTable){
                 initializeCompostData();
                 ComposterPlus.logMessage("Initial Compost-Data was filled in!");
+            }
+
+            if (!isLootTable){
+                initializeLootData();
+                ComposterPlus.logMessage("Initial Loot-Data was filled in!");
             }
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
-
-    public boolean isCompostTableEmpty() {
-        try (Connection conn = connect();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery("SELECT COUNT(*) FROM Compost")) {
-            return !rs.next() || rs.getInt(1) == 0;
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
-
 
     private void createSQLiteFile(File databaseFile) {
         try {
@@ -149,7 +148,6 @@ public class Database {
         return loots;
     }
 
-
     public void initializeCompostData() {
         insertCompostData(30, "BEETROOT_SEEDS", "DRIED_KELP", "GLOW_BERRIES", "GRASS", "GRASS_BLOCK", "HANGING_ROOTS",
                 "MANGROVE_PROPAGULE", "KELP", "CHERRY_SAPLING", "MELON_SEEDS", "MOSS_CARPET", "PINK_PETALS",
@@ -187,6 +185,49 @@ public class Database {
                 ComposterPlus.logMessage("Item may was removed in later version: "+materialName);
             }
         }
+    }
+
+    public void initializeLootData() {
+        insertLootData("BONE_MEAL", 100, 0);
+    }
+
+    public void insertLootData(String materialName, double chance, int playerExp) {
+        Material material = Material.valueOf(materialName.toUpperCase(Locale.ROOT));
+        ItemStack itemStack = new ItemStack(material);
+        Loot loot = new Loot(itemStack, chance, playerExp);
+        insertLoot(loot);
+    }
+
+    public boolean isLootTableEmpty() {
+        try (Connection conn = connect();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery("SELECT COUNT(*) FROM Loot")) {
+            return !rs.next() || rs.getInt(1) == 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public boolean isCompostTableEmpty() {
+        try (Connection conn = connect();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery("SELECT COUNT(*) FROM Compost")) {
+            return !rs.next() || rs.getInt(1) == 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public boolean doesTableExist(String tableName) {
+        try (Connection conn = connect();
+             ResultSet rs = conn.getMetaData().getTables(null, null, tableName, null)) {
+            return rs.next();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
     public void deleteCompost(ItemStack itemStack) {

@@ -10,6 +10,7 @@ import net.fruchtlabor.composterplus.misc.Loot;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -37,7 +38,6 @@ public class ComposterPlus extends JavaPlugin {
         generateDefaultFiles();
         languageManager = new LanguageManager(this.getLogger());
         languageManager.loadLanguageFile();
-
     }
 
     public static void logMessage(String message) {
@@ -46,8 +46,11 @@ public class ComposterPlus extends JavaPlugin {
     }
 
     private void generateDefaultFiles() {
-        saveResource("config.yml", false);
-        saveResource("lang.yml", false);
+        if (!new File(getDataFolder(), "config.yml").exists()) {
+            saveResource("config.yml", false);
+        }
+        if (!new File(getDataFolder(), "lang.yml").exists()) {
+            saveResource("lang.yml", false);
+        }
     }
-
 }
